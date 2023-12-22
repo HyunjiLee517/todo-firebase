@@ -1,4 +1,4 @@
 # flutter_todo
 
-Flutter todo app
-use firebase as a database to store todo list.
+- Flutter todo app
+- uses firebase as a database to store todo list.
