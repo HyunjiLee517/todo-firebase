@@ -5,6 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 
+FirebaseFirestore db = FirebaseFirestore.instance; //firebase instance
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -42,9 +44,7 @@ class _TodoListState extends State<TodoList> {
   final TextEditingController _textFieldController = TextEditingController();
 
   void _addTodoItem(String name) {
-    DocumentReference documentReference =
-        FirebaseFirestore.instance.collection("FirstTodos").doc(name);
-
+    DocumentReference documentReference = db.collection("FirstTodos").doc(name);
     //Map
     Map<String, dynamic> todos = {
       "name": name,
@@ -55,10 +55,9 @@ class _TodoListState extends State<TodoList> {
   }
 
   void _handleTodoChange(String name) {
-    DocumentReference documentReference =
-        FirebaseFirestore.instance.collection("FirstTodos").doc(name);
+    DocumentReference documentReference = db.collection("FirstTodos").doc(name);
     late bool initialValue;
-    FirebaseFirestore.instance
+    db
         .collection("FirstTodos")
         .where('name', isEqualTo: name)
         .get()
@@ -72,9 +71,7 @@ class _TodoListState extends State<TodoList> {
   }
 
   void _deleteTodo(String name) {
-    DocumentReference documentReference =
-        FirebaseFirestore.instance.collection("FirstTodos").doc(name);
-
+    DocumentReference documentReference = db.collection("FirstTodos").doc(name);
     documentReference.delete();
   }
 
@@ -131,8 +128,7 @@ class _TodoListState extends State<TodoList> {
         title: Text(widget.title),
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream:
-              FirebaseFirestore.instance.collection("FirstTodos").snapshots(),
+          stream: db.collection("FirstTodos").snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -175,17 +171,14 @@ class _TodoListState extends State<TodoList> {
 
 class TodoItem extends StatelessWidget {
   TodoItem({
-    // required this.todo,
     required this.todo,
     required this.onTodoChanged,
     required this.removeTodo,
   }) : super(key: ObjectKey(todo));
-  // final Todo todo;
+
   final Map<String, dynamic> todo;
   final void Function(String name) onTodoChanged;
   final void Function(String name) removeTodo;
-  // late final DocumentReference documentReference =
-  //     FirebaseFirestore.instance.collection("MyTodos").doc(name);
 
   TextStyle? _getTextStyle(bool checked) {
     if (!checked) return null;
